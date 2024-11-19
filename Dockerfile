@@ -3,5 +3,5 @@ FROM ${GCR_MIRROR}distroless/static:nonroot
 LABEL org.opencontainers.image.source https://github.com/norskhelsenett/ror
 WORKDIR /
 
-COPY dist/audit /bin/audit
+COPY dist/ms-audit /bin/audit
 ENTRYPOINT ["/bin/audit"]
