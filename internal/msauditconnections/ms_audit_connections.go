@@ -50,8 +50,8 @@ func mustInitRorClient() *rorclient.RorClient {
 	}
 	transport := resttransport.NewRorHttpTransport(&clientConfig)
 	RorClient = rorclient.NewRorClient(transport)
-	if err := RorClient.Ping(); err != nil {
-		fmt.Printf("failed to ping RorClient: %v", err)
+	if err := RorClient.CheckConnection(); err != nil {
+		fmt.Printf("failed to connect RorClient: %v", err)
 		return nil
 	}
 	return RorClient
