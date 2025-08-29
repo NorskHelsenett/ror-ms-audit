@@ -25,7 +25,7 @@ func CreateAndCommitAclList(ctx context.Context, event messagebuscontracts.AclUp
 		rlog.Fatalc(ctx, "could not create markdown of acl list ...", nil)
 	}
 
-	err = msauditconnections.GitClient.UpdateFile("docs/rolle_og_rettigheter.md", md, "Updated ACL list")
+	err = msauditconnections.GitClient.UpdateFile("docs/rolle_og_rettigheter.md", []byte(md), "Updated ACL list")
 	if err != nil {
 		rlog.Fatalc(ctx, "could not update file in git ...", err)
 	}
