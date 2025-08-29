@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
 
@@ -24,7 +23,6 @@ import (
 func main() {
 	cancelChan := make(chan os.Signal, 1)
 	stop := make(chan struct{})
-	// catch SIGETRM or SIGINTERRUPT
 	signal.Notify(cancelChan, syscall.SIGTERM, syscall.SIGINT)
 
 	rlog.Info("Audit micro service starting")
@@ -34,13 +32,7 @@ func main() {
 
 	healthserver.MustStartWithDefaults()
 
-	go func() {
-		trace.ConnectTracer(stop, viper.GetString(configconsts.ROLE), viper.GetString(configconsts.OPENTELEMETRY_COLLECTOR_ENDPOINT))
-		sig := <-cancelChan
-		_, _ = fmt.Println()
-		_, _ = fmt.Println(sig)
-		stop <- struct{}{}
-	}()
+	trace.StartTracing(stop, cancelChan, viper.GetString(configconsts.ROLE), viper.GetString(configconsts.OPENTELEMETRY_COLLECTOR_ENDPOINT))
 
 	msauditrabbitmqhandler.StartListening()
 
