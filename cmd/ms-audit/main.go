@@ -17,9 +17,6 @@ import (
 
 	"github.com/NorskHelsenett/ror/pkg/telemetry/trace"
 
-	"github.com/NorskHelsenett/ror/pkg/clients/mongodb"
-	"github.com/NorskHelsenett/ror/pkg/clients/vaultclient/databasecredhelper"
-
 	"github.com/NorskHelsenett/ror/pkg/rlog"
 
 	"github.com/spf13/viper"
@@ -41,9 +38,6 @@ func main() {
 	auditconfig.Load()
 
 	msauditconnections.InitConnections()
-
-	mongocredshelper := databasecredhelper.NewVaultDBCredentials(msauditconnections.VaultClient, viper.GetString(configconsts.ROLE), "mongodb")
-	mongodb.Init(mongocredshelper, viper.GetString(configconsts.MONGODB_HOST), viper.GetString(configconsts.MONGODB_PORT), viper.GetString(configconsts.MONGODB_DATABASE))
 
 	msauditrabbitmqdefinitions.InitOrDie()
 
