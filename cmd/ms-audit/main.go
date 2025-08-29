@@ -6,9 +6,7 @@ import (
 	"os/signal"
 
 	"github.com/NorskHelsenett/ror-ms-audit/internal/auditconfig"
-	"github.com/NorskHelsenett/ror-ms-audit/internal/clients/rabbitmq/msauditrabbitmqdefinitions"
-	"github.com/NorskHelsenett/ror-ms-audit/internal/clients/rabbitmq/msauditrabbitmqhandler"
-	"github.com/NorskHelsenett/ror-ms-audit/internal/httpserver"
+	"github.com/NorskHelsenett/ror-ms-audit/internal/handlers/msauditrabbitmqhandler"
 	"github.com/NorskHelsenett/ror-ms-audit/internal/msauditconnections"
 
 	"syscall"
@@ -17,17 +15,12 @@ import (
 
 	"github.com/NorskHelsenett/ror/pkg/telemetry/trace"
 
+	healthserver "github.com/NorskHelsenett/ror/pkg/helpers/rorhealth/server"
 	"github.com/NorskHelsenett/ror/pkg/rlog"
 
 	"github.com/spf13/viper"
-
-	// https://blog.devgenius.io/know-gomaxprocs-before-deploying-your-go-app-to-kubernetes-7a458fb63af1
-	"go.uber.org/automaxprocs/maxprocs"
 )
 
-func init() {
-	_, _ = maxprocs.Set(maxprocs.Logger(rlog.Infof))
-}
 func main() {
 	cancelChan := make(chan os.Signal, 1)
 	stop := make(chan struct{})
@@ -39,11 +32,7 @@ func main() {
 
 	msauditconnections.InitConnections()
 
-	msauditrabbitmqdefinitions.InitOrDie()
-
-	go func() {
-		httpserver.InitHttpServer()
-	}()
+	healthserver.MustStartWithDefaults()
 
 	go func() {
 		trace.ConnectTracer(stop, viper.GetString(configconsts.ROLE), viper.GetString(configconsts.OPENTELEMETRY_COLLECTOR_ENDPOINT))
@@ -56,7 +45,5 @@ func main() {
 	msauditrabbitmqhandler.StartListening()
 
 	sig := <-cancelChan
-	rlog.Info("Caught signal", rlog.Any("singal", sig))
-	// shutdown other goroutines gracefully
-	// close other resources
+	rlog.Info("Caught signal", rlog.Any("signal", sig))
 }
