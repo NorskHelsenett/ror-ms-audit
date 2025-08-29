@@ -3,7 +3,7 @@ module github.com/NorskHelsenett/ror-ms-audit
 go 1.25.0
 
 require (
-	github.com/NorskHelsenett/ror v1.4.3
+	github.com/NorskHelsenett/ror v1.4.4
 	github.com/hashicorp/vault/api v1.20.0
 	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/spf13/viper v1.20.1
