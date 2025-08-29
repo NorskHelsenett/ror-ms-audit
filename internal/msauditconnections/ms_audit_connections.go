@@ -6,6 +6,7 @@ import (
 	"github.com/NorskHelsenett/ror-ms-audit/internal/auditconfig"
 	"github.com/NorskHelsenett/ror-ms-audit/internal/clients/gitclient"
 	"github.com/NorskHelsenett/ror/pkg/config/configconsts"
+	"github.com/NorskHelsenett/ror/pkg/config/rorversion"
 
 	"github.com/NorskHelsenett/ror/pkg/clients/rabbitmqclient"
 	"github.com/NorskHelsenett/ror/pkg/clients/rorclient"
@@ -30,7 +31,7 @@ var (
 func InitConnections() {
 	VaultClient = vaultclient.NewVaultClient(viper.GetString(configconsts.ROLE), viper.GetString(configconsts.VAULT_URL))
 	rmqcredhelper := rabbitmqcredhelper.NewVaultRMQCredentials(VaultClient, viper.GetString(configconsts.ROLE))
-	RabbitMQConnection = rabbitmqclient.NewRabbitMQConnection(rmqcredhelper, viper.GetString(configconsts.RABBITMQ_HOST), viper.GetString(configconsts.RABBITMQ_PORT), viper.GetString(configconsts.RABBITMQ_BROADCAST_NAME))
+	RabbitMQConnection = rabbitmqclient.NewRabbitMQConnectionWithDefaults(rabbitmqclient.OptionCredentialsProvider(rmqcredhelper))
 	RorClient = mustInitRorClient()
 
 	GitClient = gitclient.NewGitClient(viper.GetString(configconsts.GIT_REPO_URL), viper.GetString(configconsts.GIT_BRANCH), viper.GetString(configconsts.GIT_TOKEN))
@@ -44,7 +45,7 @@ func mustInitRorClient() *rorclient.RorClient {
 	clientConfig := httpclient.HttpTransportClientConfig{
 		BaseURL:      auditconfig.RorApiURL,
 		AuthProvider: authProvider,
-		Version:      auditconfig.GetRorVersion(),
+		Version:      rorversion.GetRorVersion(),
 		Role:         viper.GetString(configconsts.ROLE),
 	}
 	transport := resttransport.NewRorHttpTransport(&clientConfig)
