@@ -5,34 +5,29 @@ import (
 	"fmt"
 	"strings"
 
-	aclrepository "github.com/NorskHelsenett/ror-ms-audit/internal/acl/repositories"
-	"github.com/NorskHelsenett/ror-ms-audit/internal/clients/helsegitlabclient"
+	"github.com/NorskHelsenett/ror-ms-audit/internal/msauditconnections"
 
 	"github.com/NorskHelsenett/ror/pkg/messagebuscontracts"
-
-	aclmodels "github.com/NorskHelsenett/ror/pkg/models/acl"
+	"github.com/NorskHelsenett/ror/pkg/models/aclmodels"
 
 	"github.com/NorskHelsenett/ror/pkg/rlog"
 )
 
-func init() {
-	rlog.Debugc(context.Background(), "Init audit service")
-}
-
 func CreateAndCommitAclList(ctx context.Context, event messagebuscontracts.AclUpdateEvent) {
-	acls, err := aclrepository.GetAllACL2(ctx)
+
+	acls, err := msauditconnections.RorClient.AclClient.GetAll(ctx)
 	if err != nil {
 		rlog.Fatalc(ctx, "could not get acl items ...", nil)
 	}
 
-	md, err := createMarkdown(acls)
+	md, err := createMarkdown(*acls)
 	if err != nil {
 		rlog.Fatalc(ctx, "could not create markdown of acl list ...", nil)
 	}
 
-	err = helsegitlabclient.PushAclToRepo(md)
+	err = msauditconnections.GitClient.UpdateFile("docs/rolle_og_rettigheter.md", md, "Updated ACL list")
 	if err != nil {
-		rlog.Fatalc(ctx, "could not push markdown to repo ...", err)
+		rlog.Fatalc(ctx, "could not update file in git ...", err)
 	}
 
 	rlog.Debugc(ctx, "acl updated")
