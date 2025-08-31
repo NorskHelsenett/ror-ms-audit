@@ -6,7 +6,6 @@ import (
 
 	"github.com/NorskHelsenett/ror-ms-audit/internal/auditconfig"
 	"github.com/NorskHelsenett/ror-ms-audit/internal/handlers/msauditrabbitmqhandler"
-	"github.com/NorskHelsenett/ror-ms-audit/internal/msauditconnections"
 
 	"syscall"
 
@@ -27,8 +26,6 @@ func main() {
 
 	rlog.Info("Audit micro service starting")
 	auditconfig.Load()
-
-	msauditconnections.InitConnections()
 
 	healthserver.MustStartWithDefaults()
 

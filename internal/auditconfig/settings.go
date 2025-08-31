@@ -20,8 +20,6 @@ import (
 )
 
 var (
-	RorApiURL          string = "http://localhost:8080"
-	RorApiKey          string = "my-secret-api-key"
 	VaultClient        *vaultclient.VaultClient
 	RabbitMQConnection rabbitmqclient.RabbitMQConnection
 	RorClient          *rorclient.RorClient
@@ -36,8 +34,7 @@ func Load() {
 	viper.SetDefault(configconsts.HTTP_HEALTH_PORT, "8080")
 	viper.SetDefault(configconsts.GIT_PATH, "auth.md")
 	viper.SetDefault("RABBITMQ_QUEUE_NAME", "ms-audit")
-	RorApiKey = viper.GetString(configconsts.API_KEY)
-	RorApiURL = viper.GetString(configconsts.API_ENDPOINT)
+
 	viper.AutomaticEnv()
 	initConnections()
 }
@@ -62,16 +59,16 @@ func initConnections() {
 }
 
 func mustInitRorClient() *rorclient.RorClient {
-	rlog.Infof("Initializing ROR client, api: %s", RorApiURL)
-	if RorApiKey == "" {
+	rlog.Infof("Initializing ROR client, api: %s", viper.GetString(configconsts.API_ENDPOINT))
+	if viper.GetString(configconsts.API_KEY) == "" {
 		panic("API_KEY is not set")
 	}
-	if RorApiURL == "" {
+	if viper.GetString(configconsts.API_ENDPOINT) == "" {
 		panic("ROR_URL is not set")
 	}
-	authProvider := httpauthprovider.NewAuthProvider(httpauthprovider.AuthPoviderTypeAPIKey, RorApiKey)
+	authProvider := httpauthprovider.NewAuthProvider(httpauthprovider.AuthPoviderTypeAPIKey, viper.GetString(configconsts.API_KEY))
 	clientConfig := httpclient.HttpTransportClientConfig{
-		BaseURL:      RorApiURL,
+		BaseURL:      viper.GetString(configconsts.API_ENDPOINT),
 		AuthProvider: authProvider,
 		Version:      rorversion.GetRorVersion(),
 		Role:         viper.GetString(configconsts.ROLE),
