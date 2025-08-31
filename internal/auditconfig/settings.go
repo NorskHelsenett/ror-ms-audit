@@ -2,7 +2,6 @@ package auditconfig
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/NorskHelsenett/ror/pkg/clients/gitclient"
 	"github.com/NorskHelsenett/ror/pkg/clients/rabbitmqclient"
@@ -15,14 +14,14 @@ import (
 	"github.com/NorskHelsenett/ror/pkg/config/configconsts"
 	"github.com/NorskHelsenett/ror/pkg/config/rorversion"
 	health "github.com/NorskHelsenett/ror/pkg/helpers/rorhealth"
+	"github.com/NorskHelsenett/ror/pkg/rlog"
 
 	"github.com/spf13/viper"
 )
 
 var (
-	RorApiURL string = "http://localhost:8080"
-	RorApiKey string = "my-secret-api-key"
-
+	RorApiURL          string = "http://localhost:8080"
+	RorApiKey          string = "my-secret-api-key"
 	VaultClient        *vaultclient.VaultClient
 	RabbitMQConnection rabbitmqclient.RabbitMQConnection
 	RorClient          *rorclient.RorClient
@@ -63,6 +62,13 @@ func initConnections() {
 }
 
 func mustInitRorClient() *rorclient.RorClient {
+	rlog.Infof("Initializing ROR client, api: %s", RorApiURL)
+	if RorApiKey == "" {
+		panic("API_KEY is not set")
+	}
+	if RorApiURL == "" {
+		panic("ROR_URL is not set")
+	}
 	authProvider := httpauthprovider.NewAuthProvider(httpauthprovider.AuthPoviderTypeAPIKey, RorApiKey)
 	clientConfig := httpclient.HttpTransportClientConfig{
 		BaseURL:      RorApiURL,
@@ -73,8 +79,9 @@ func mustInitRorClient() *rorclient.RorClient {
 	transport := resttransport.NewRorHttpTransport(&clientConfig)
 	RorClient = rorclient.NewRorClient(transport)
 	if err := RorClient.CheckConnection(); err != nil {
-		fmt.Printf("failed to ping RorClient: %v", err)
-		return nil
+		rlog.Error("failed to ping RorClient", err)
+		panic("failed to ping RorClient")
 	}
+
 	return RorClient
 }
