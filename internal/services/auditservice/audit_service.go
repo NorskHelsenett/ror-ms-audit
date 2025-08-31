@@ -17,7 +17,7 @@ import (
 
 func CreateAndCommitAclList(ctx context.Context, event messagebuscontracts.AclUpdateEvent) {
 
-	acls, err := auditconfig.RorClient.AclClient.GetAll(ctx)
+	acls, err := auditconfig.RorClient.Acl().GetAll(ctx)
 	if err != nil {
 		rlog.Fatalc(ctx, "could not get acl items ...", nil)
 	}
