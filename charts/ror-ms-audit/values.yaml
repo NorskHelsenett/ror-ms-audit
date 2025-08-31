@@ -10,9 +10,8 @@ nhn:
   vaultTokenTtl: "24h"
   vaultTokenK8sPath: "/var/run/secrets/kubernetes.io/serviceaccount/token"
   role: "ror-ms-audit"
-  mongodbHost: "ror-mongodb.nhn-ror.svc"
-  mongodbPort: "27017"
-  mongodbDatabase: "nhn-ror"
+  rabbitmqQueueName: "ms-audit"
+  RorApiURL: "https://api.ror.nhn.no/"
 enabled: true
 replicaCount: 1
 image:
