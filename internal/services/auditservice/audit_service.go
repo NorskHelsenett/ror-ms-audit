@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/NorskHelsenett/ror-ms-audit/internal/msauditconnections"
+	"github.com/NorskHelsenett/ror-ms-audit/internal/auditconfig"
 	"github.com/spf13/viper"
 
 	"github.com/NorskHelsenett/ror/pkg/config/configconsts"
@@ -17,7 +17,7 @@ import (
 
 func CreateAndCommitAclList(ctx context.Context, event messagebuscontracts.AclUpdateEvent) {
 
-	acls, err := msauditconnections.RorClient.AclClient.GetAll(ctx)
+	acls, err := auditconfig.RorClient.AclClient.GetAll(ctx)
 	if err != nil {
 		rlog.Fatalc(ctx, "could not get acl items ...", nil)
 	}
@@ -29,7 +29,7 @@ func CreateAndCommitAclList(ctx context.Context, event messagebuscontracts.AclUp
 
 	path := viper.GetString(configconsts.GIT_PATH)
 
-	err = msauditconnections.GitClient.UploadFile(path, []byte(md), fmt.Sprintf("Updated %s", path))
+	err = auditconfig.GitClient.UploadFile(path, []byte(md), fmt.Sprintf("Updated %s", path))
 	if err != nil {
 		rlog.Fatalc(ctx, "could not update file in git ...", err)
 	}

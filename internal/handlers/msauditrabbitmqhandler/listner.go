@@ -1,7 +1,7 @@
 package msauditrabbitmqhandler
 
 import (
-	"github.com/NorskHelsenett/ror-ms-audit/internal/msauditconnections"
+	"github.com/NorskHelsenett/ror-ms-audit/internal/auditconfig"
 	"github.com/spf13/viper"
 
 	"github.com/NorskHelsenett/ror/pkg/handlers/rabbitmqhandler"
@@ -20,7 +20,7 @@ func StartListening() {
 
 	go func() {
 		config := rabbitmqhandler.RabbitMQListnerConfig{
-			Client:    msauditconnections.RabbitMQConnection,
+			Client:    auditconfig.RabbitMQConnection,
 			QueueName: queueName,
 			Consumer:  "",
 			AutoAck:   false,
@@ -30,7 +30,7 @@ func StartListening() {
 			Args:      queueArgs,
 		}
 		rabbithandler := rabbitmqhandler.New(config, auditmessagehandler{})
-		err := msauditconnections.RabbitMQConnection.RegisterHandler(rabbithandler)
+		err := auditconfig.RabbitMQConnection.RegisterHandler(rabbithandler)
 		if err != nil {
 			rlog.Fatal("could not register handler", err)
 		}
