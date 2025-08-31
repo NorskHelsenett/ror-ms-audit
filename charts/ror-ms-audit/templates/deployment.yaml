@@ -52,8 +52,8 @@ spec:
               value: "ror-opentelemetry-collector.nhn-ror.svc:4317"
             - name: RABBITMQ_QUEUE_NAME
               value: {{ default "ms-audit" .Values.nhn.rabbitmqQueueName | quote }}
-            - name: ROR_API_URL
-              value: {{ default "" .Values.nhn.RorApiURL | quote }}
+            - name: ROR_URL
+              value: {{ default "https://api.ror.nhn.no/" .Values.nhn.RorApiURL | quote }}
           envFrom:
             - secretRef:
                 name: ror-ms-auth-git
