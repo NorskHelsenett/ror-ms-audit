@@ -50,6 +50,9 @@ spec:
               value: {{ default "ror-ms-audit" .Values.nhn.role | quote }}
             - name: OPENTELEMETRY_COLLECTOR_ENDPOINT
               value: "ror-opentelemetry-collector.nhn-ror.svc:4317"
+          envFrom:
+            - secretRef:
+                name: ror-ms-auth-git
           ports:
             - name: http
               containerPort: 8080
