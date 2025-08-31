@@ -35,6 +35,8 @@ func Load() {
 	viper.SetDefault(configconsts.VAULT_URL, "http://localhost:8200")
 	viper.SetDefault(configconsts.HTTP_HEALTH_HOST, "0.0.0.0")
 	viper.SetDefault(configconsts.HTTP_HEALTH_PORT, "8080")
+	viper.SetDefault(configconsts.GIT_PATH, "auth.md")
+	viper.SetDefault("RABBITMQ_QUEUE_NAME", "ms-audit")
 	RorApiKey = viper.GetString(configconsts.API_KEY)
 	RorApiURL = viper.GetString(configconsts.API_ENDPOINT)
 	viper.AutomaticEnv()
@@ -57,6 +59,7 @@ func initConnections() {
 	health.Register("vault", VaultClient)
 	health.Register("rabbitmq", RabbitMQConnection)
 	health.Register("rorclient", RorClient)
+	health.Register("gitclient", GitClient)
 }
 
 func mustInitRorClient() *rorclient.RorClient {

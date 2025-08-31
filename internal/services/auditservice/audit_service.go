@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"github.com/NorskHelsenett/ror-ms-audit/internal/msauditconnections"
+	"github.com/spf13/viper"
 
+	"github.com/NorskHelsenett/ror/pkg/config/configconsts"
 	"github.com/NorskHelsenett/ror/pkg/messagebuscontracts"
 	"github.com/NorskHelsenett/ror/pkg/models/aclmodels"
 
@@ -25,7 +27,9 @@ func CreateAndCommitAclList(ctx context.Context, event messagebuscontracts.AclUp
 		rlog.Fatalc(ctx, "could not create markdown of acl list ...", nil)
 	}
 
-	err = msauditconnections.GitClient.UpdateFile("docs/rolle_og_rettigheter.md", []byte(md), "Updated ACL list")
+	path := viper.GetString(configconsts.GIT_PATH)
+
+	err = msauditconnections.GitClient.UploadFile(path, []byte(md), fmt.Sprintf("Updated %s", path))
 	if err != nil {
 		rlog.Fatalc(ctx, "could not update file in git ...", err)
 	}
@@ -36,7 +40,7 @@ func CreateAndCommitAclList(ctx context.Context, event messagebuscontracts.AclUp
 func createMarkdown(acls []aclmodels.AclV2ListItem) (string, error) {
 	var sb strings.Builder
 	// not indenting because of result in file
-	sb.WriteString(`# Rolle og rettigheter
+	sb.WriteString(`# Autorisasjonsregister
 
 ## Liste
 
