@@ -3,8 +3,7 @@ module github.com/NorskHelsenett/ror-ms-audit
 go 1.25.0
 
 require (
-	github.com/NorskHelsenett/ror v1.4.14
-	github.com/go-git/go-git/v5 v5.16.2
+	github.com/NorskHelsenett/ror v1.4.15
 	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/spf13/viper v1.20.1
 )
@@ -31,6 +30,7 @@ require (
 	github.com/gin-gonic/gin v1.10.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.6.2 // indirect
+	github.com/go-git/go-git/v5 v5.16.2 // indirect
 	github.com/go-http-utils/headers v0.0.0-20181008091004-fed159eddc2a // indirect
 	github.com/go-http-utils/negotiator v1.0.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect

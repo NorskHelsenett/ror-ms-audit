@@ -16,7 +16,6 @@ import (
 	"github.com/NorskHelsenett/ror/pkg/config/rorversion"
 	health "github.com/NorskHelsenett/ror/pkg/helpers/rorhealth"
 	"github.com/NorskHelsenett/ror/pkg/rlog"
-	"github.com/go-git/go-git/v5/plumbing/object"
 
 	"github.com/spf13/viper"
 )
@@ -52,10 +51,12 @@ func initConnections() {
 	RabbitMQConnection = rabbitmqclient.NewRabbitMQConnectionWithDefaults(rabbitmqclient.OptionCredentialsProvider(rmqcredhelper))
 	RorClient = mustInitRorClient()
 
-	GitClient = gitclient.NewGitClient(viper.GetString(configconsts.GIT_REPO_URL), viper.GetString(configconsts.GIT_BRANCH), viper.GetString(configconsts.GIT_TOKEN), object.Signature{
-		Name:  viper.GetString(configconsts.ROLE),
-		Email: fmt.Sprintf("%s@ror.system", viper.GetString(configconsts.ROLE)),
-	})
+	GitClient = gitclient.NewGitClient(
+		viper.GetString(configconsts.GIT_REPO_URL),
+		viper.GetString(configconsts.GIT_TOKEN),
+		gitclient.OptionAuthor(viper.GetString(configconsts.ROLE), fmt.Sprintf("%s@ror.system", viper.GetString(configconsts.ROLE))),
+		gitclient.OptionBranch(viper.GetString(configconsts.GIT_BRANCH)),
+	)
 
 	health.Register("vault", VaultClient)
 	health.Register("rabbitmq", RabbitMQConnection)
@@ -78,6 +79,7 @@ func mustInitRorClient() *rorclient.RorClient {
 		Version:      rorversion.GetRorVersion(),
 		Role:         viper.GetString(configconsts.ROLE),
 	}
+
 	transport := resttransport.NewRorHttpTransport(&clientConfig)
 	RorClient = rorclient.NewRorClient(transport)
 	if err := RorClient.CheckConnection(); err != nil {

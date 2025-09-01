@@ -1,4 +1,4 @@
-name: Release API
+name: Release ror-ms-audit
 
 on:
   push:

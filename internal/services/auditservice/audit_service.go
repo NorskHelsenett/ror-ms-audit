@@ -8,6 +8,7 @@ import (
 	"github.com/NorskHelsenett/ror-ms-audit/internal/auditconfig"
 	"github.com/spf13/viper"
 
+	"github.com/NorskHelsenett/ror/pkg/clients/gitclient"
 	"github.com/NorskHelsenett/ror/pkg/config/configconsts"
 	"github.com/NorskHelsenett/ror/pkg/messagebuscontracts"
 	"github.com/NorskHelsenett/ror/pkg/models/aclmodels"
@@ -29,7 +30,7 @@ func CreateAndCommitAclList(ctx context.Context, event messagebuscontracts.AclUp
 
 	path := viper.GetString(configconsts.GIT_PATH)
 
-	err = auditconfig.GitClient.UploadFile(path, []byte(md), fmt.Sprintf("Updated %s", path))
+	err = auditconfig.GitClient.UploadFile(path, []byte(md), fmt.Sprintf("Updated %s", path), gitclient.OptionBranch(viper.GetString(configconsts.GIT_BRANCH)), gitclient.OptionDepth(1))
 	if err != nil {
 		rlog.Errorc(ctx, "could not update file in git ...", err)
 		return
