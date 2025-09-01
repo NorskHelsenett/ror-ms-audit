@@ -31,10 +31,11 @@ func CreateAndCommitAclList(ctx context.Context, event messagebuscontracts.AclUp
 
 	err = auditconfig.GitClient.UploadFile(path, []byte(md), fmt.Sprintf("Updated %s", path))
 	if err != nil {
-		rlog.Fatalc(ctx, "could not update file in git ...", err)
+		rlog.Errorc(ctx, "could not update file in git ...", err)
+		return
 	}
 
-	rlog.Debugc(ctx, "acl updated")
+	rlog.Info("Acl updated successfully")
 }
 
 func createMarkdown(acls []aclmodels.AclV2ListItem) (string, error) {
