@@ -12,6 +12,7 @@ nhn:
   role: "ror-ms-audit"
   rabbitmqQueueName: "ms-audit"
   RorApiURL: "https://api.ror.nhn.no/"
+  HealthPort: 8080
 enabled: true
 replicaCount: 1
 image:

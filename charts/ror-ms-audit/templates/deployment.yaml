@@ -54,6 +54,10 @@ spec:
               value: {{ default "ms-audit" .Values.nhn.rabbitmqQueueName | quote }}
             - name: ROR_URL
               value: {{ default "https://api.ror.nhn.no/" .Values.nhn.RorApiURL | quote }}
+            - name: HTTP_HEALTH_PORT
+              value: {{ default "8080" .Values.nhn.HealthPort | quote }}
+            - name: HTTP_HEALTH_HOST
+              value: "0.0.0.0"
           envFrom:
             - secretRef:
                 name: ror-ms-auth-git
