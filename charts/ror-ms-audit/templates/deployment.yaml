@@ -56,25 +56,23 @@ spec:
               value: {{ default "https://api.ror.nhn.no/" .Values.nhn.RorApiURL | quote }}
             - name: HTTP_HEALTH_PORT
               value: {{ default "8080" .Values.nhn.HealthPort | quote }}
-            - name: HTTP_HEALTH_HOST
-              value: "0.0.0.0"
           envFrom:
             - secretRef:
                 name: ror-ms-auth-git
             - secretRef:
                 name: ror-ms-auth-api
           ports:
-            - name: http
-              containerPort: 8080
+            - name: health
+              containerPort: {{ .Values.nhn.HealthPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /health
-              port: http
+              port: health
           readinessProbe:
             httpGet:
               path: /health
-              port: http
+              port: health
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
