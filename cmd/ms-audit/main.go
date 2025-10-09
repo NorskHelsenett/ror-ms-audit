@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	//TODO: mshelper
+	// TODO: mshelper
 	// config load interface
 	rorservice.MustInit()
 

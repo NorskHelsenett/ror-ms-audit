@@ -58,9 +58,13 @@ func initConnections() {
 		gitclient.OptionBranch(viper.GetString(configconsts.GIT_BRANCH)),
 	)
 
+	//nolint:staticcheck // TODO: Migrate to RegisterWithContext
 	health.Register("vault", VaultClient)
+	//nolint:staticcheck // TODO: Migrate to RegisterWithContext
 	health.Register("rabbitmq", RabbitMQConnection)
+	//nolint:staticcheck // TODO: Migrate to RegisterWithContext
 	health.Register("rorclient", RorClient)
+	//nolint:staticcheck // TODO: Migrate to RegisterWithContext
 	health.Register("gitclient", GitClient)
 }
 
