@@ -84,14 +84,14 @@ func getTable(acls []aclmodels.AclV2ListItem) string {
 	sb.WriteString(tableheader)
 
 	for _, acl := range acls {
-		sb.WriteString(getTableRow(acl))
+		sb.WriteString(getTableRow(&acl))
 	}
 
 	md := sb.String()
 	return md
 }
 
-func getTableRow(acl aclmodels.AclV2ListItem) string {
+func getTableRow(acl *aclmodels.AclV2ListItem) string {
 	return fmt.Sprintf("| %s | %s | %s | %s | %s | %s | %s | %s | %s |\n",
 		acl.Group,
 		getEmojiByBool(acl.Access.Read), getEmojiByBool(acl.Access.Create), getEmojiByBool(acl.Access.Update), getEmojiByBool(acl.Access.Delete), getEmojiByBool(acl.Access.Owner),
@@ -110,7 +110,7 @@ func getAllSubjects(scope string, acls []aclmodels.AclV2ListItem) []string {
 	for _, acl := range filteredAcls {
 		subjectMap[string(acl.Subject)] = true
 	}
-	var subjects []string
+	subjects := make([]string, 0, len(subjectMap))
 	for subject := range subjectMap {
 		subjects = append(subjects, subject)
 	}
@@ -124,7 +124,7 @@ func getAllScopes(acls []aclmodels.AclV2ListItem) []string {
 	for _, acl := range acls {
 		scopeMap[string(acl.Scope)] = true
 	}
-	var scopes []string
+	scopes := make([]string, 0, len(scopeMap))
 
 	// Enforce order for these scopes
 	priority := []string{"ror", "project", "cluster"}

@@ -13,6 +13,7 @@ import (
 type auditmessagehandler struct {
 }
 
+//nolint:gocritic // message parameter must match RabbitMQMessageHandler interface signature
 func (amh auditmessagehandler) HandleMessage(ctx context.Context, message amqp091.Delivery) error {
 	var event messagebuscontracts.AclUpdateEvent
 	err := json.Unmarshal(message.Body, &event)

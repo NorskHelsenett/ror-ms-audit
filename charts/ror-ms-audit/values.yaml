@@ -13,6 +13,10 @@ nhn:
   rabbitmqQueueName: "ms-audit"
   RorApiURL: "https://api.ror.nhn.no/"
   HealthPort: 8080
+
+autoscaling:
+  enabled: false
+
 enabled: true
 replicaCount: 1
 image:
